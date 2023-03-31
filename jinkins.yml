@@ -1,0 +1,41 @@
+---
+- name: playbook to install jenkins
+  hosts: webservers
+  become: true
+  tasks:
+  - name: Download jenkins
+    ansible.builtin.get_url:
+      url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+      dest: /etc/yum.repos.d/jenkins.repo
+  - name: Import a key from a url
+    ansible.builtin.rpm_key:
+      state: present
+      key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+  - name: Upgrade all packages
+    ansible.builtin.yum:
+      name: '*'
+      state: latest
+  - name: Install the latest version of java
+    ansible.builtin.yum:
+      name: java-11-openjdk
+      state: present
+  - name: Install jenkins
+    ansible.builtin.yum:
+      name: jenkins
+      state: present
+  - name: daemon reload
+    ansible.builtin.systemd:
+      daemon_reload: true
+  - name: Start service jenkins, if not started
+    ansible.builtin.service:
+      name: jenkins
+      state: started
+  - name: Enable service jenkins, and not touch the state
+    ansible.builtin.service:
+      name: jenkins
+      enabled: yes
+
+
+
+
+
