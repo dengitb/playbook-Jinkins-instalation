@@ -1,6 +1,6 @@
 ---
 - name: playbook to install jenkins
-  hosts: all
+  hosts: webservers
   become: true
   tasks:
   - name: Download jenkins
